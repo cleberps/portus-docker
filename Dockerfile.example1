@@ -1,6 +1,6 @@
-FROM portus.ssys.local/sles12sp3
+FROM portus.ssys.local:5000/sles12sp2
 MAINTAINER Cleber Paiva de Souza "cleber@ssys.com.br"
-   
+
 ARG repo
 ARG cert
    
