@@ -3,13 +3,23 @@ MAINTAINER Cleber Paiva de Souza "cleber@ssys.com.br"
 
 ARG repo
 ARG cert
-   
-RUN echo "$cert" > /etc/pki/trust/anchors/RHN-ORG-TRUSTED-SSL-CERT.pem
-RUN update-ca-certificates
-RUN echo "$repo" > /etc/zypp/repos.d/susemanager:dockerbuild.repo
-   
-# ... do the required tasks
-zypper --non-interactive in python
-zypper --non-interactive in python-xml
 
+# Add the correct certificate
+RUN echo "$cert" > /etc/pki/trust/anchors/RHN-ORG-TRUSTED-SSL-CERT.pem
+
+# Update certificate trust store
+RUN update-ca-certificates
+
+# Add the repository path to the image
+RUN echo "$repo" > /etc/zypp/repos.d/susemanager:dockerbuild.repo
+
+### End: These lines required for use with {productname}
+
+# Add the package script
+ADD add_packages.sh /root/add_packages.sh
+
+# Run the package script
+RUN /root/add_packages.sh
+
+# After building remove the repository path from image
 RUN rm -f /etc/zypp/repos.d/susemanager:dockerbuild.repo
